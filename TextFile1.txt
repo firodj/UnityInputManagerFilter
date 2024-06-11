@@ -1,0 +1,91 @@
+﻿Example:
+
+Tutorial:
+https://steamcommunity.com/sharedfiles/filedetails/?l=japanese&id=2106187116
+
+
+https://github.com/pardeike/HarmonyRimWorld/issues/18
+Is it possible to harmony patch the internal class from other assembly?
+
+
+
+
+
+Example:
+```C#
+using System;
+using UnityEditor;
+using Harmony;
+using System.Reflection;
+using UnityEngine;
+using Devdog.InventoryPro;
+ 
+namespace HarmonyTest
+{
+    [InitializeOnLoad]
+    class Harmony
+    {
+        static Harmony()
+        {
+            var harmony = HarmonyInstance.Create("com.github.harmony.rimworld.mod.example");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+ 
+        public static void Prefix(UnityEngine.Object obj)
+        {
+            Debug.LogWarning("Destroy called On Obj: " + obj + " Type: " + obj.GetType());
+            GameObject go = obj as GameObject;
+            if(go != null) {
+                var items = go.GetComponentsInChildren<InventoryItemBase>(true);
+                if(items.Length > 0) {
+                    Debug.LogError("Destroy called: " + obj);
+                }
+            }
+        }
+    }
+ 
+    [HarmonyPatch(typeof(UnityEngine.Object))]
+    [HarmonyPatch("Destroy")]
+    [HarmonyPatch(new Type[] { typeof(UnityEngine.Object) })]
+    class Patch
+    {
+        static void Prefix(UnityEngine.Object obj)
+        {
+            Harmony.Prefix(obj);
+        }
+    }
+ 
+    /*[HarmonyPatch(typeof(UnityEngine.Object))]
+    [HarmonyPatch("Destroy")]
+    [HarmonyPatch(new Type[] { typeof(UnityEngine.Object), typeof(float) })]
+    class Patch2
+    {
+        static void Prefix(UnityEngine.Object obj, float t)
+        {
+            Harmony.Prefix(obj);
+        }
+    }*/
+ 
+    [HarmonyPatch(typeof(UnityEngine.Object))]
+    [HarmonyPatch("DestroyObject")]
+    [HarmonyPatch(new Type[] { typeof(UnityEngine.Object) })]
+    class Patch3
+    {
+        static void Prefix(UnityEngine.Object obj)
+        {
+            Harmony.Prefix(obj);
+        }
+    }
+ 
+    /*[HarmonyPatch(typeof(UnityEngine.Object))]
+    [HarmonyPatch("DestroyObject")]
+    [HarmonyPatch(new Type[] { typeof(UnityEngine.Object), typeof(float) })]
+    class Patch4
+    {
+        static void Prefix(UnityEngine.Object obj, float t)
+        {
+            Harmony.Prefix(obj);
+        }
+    }*/
+}
+```
