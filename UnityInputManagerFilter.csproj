@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <AssemblyName>MyFirstPlugin</AssemblyName>
-    <Description>My first plugin</Description>
-    <Version>1.0.0</Version>
+    <AssemblyName>UnityInputManagerFilter</AssemblyName>
+    <Description>Unity InputManager Filter Plugin</Description>
+    <Version>0.1.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -16,11 +16,11 @@
     <PackageReference Include="HarmonyX" Version="2.12.0" />
     <PackageReference Include="UnityEngine.Modules" Version="2020.3.25" IncludeAssets="compile" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Reference Include="Unity.InputSystem">
       <HintPath>Lib\Unity.InputSystem.dll</HintPath>

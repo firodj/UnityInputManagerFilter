@@ -4,18 +4,19 @@ using System;
 using System.Reflection;
 using BepInEx.Logging;
 
-namespace MyFirstPlugin
+namespace UnityInputManagerFilter
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
-    {          
+    {
+        const string BundleName = "com.example.unityinputmanagerfilter";
         static ManualLogSource logger;
 
         private void Awake()
         {
             // Plugin startup logic
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-            var harmony = new Harmony("com.example.patch");
+            var harmony = new Harmony(BundleName);
 
             Type inputManager = AccessTools.TypeByName("UnityEngine.InputSystem.InputManager");
             Logger.LogInfo($"inputManager {inputManager.FullName} is loaded!");
@@ -31,7 +32,7 @@ namespace MyFirstPlugin
         }
 
         static bool PrefixAddDevice(object __instance, UnityEngine.InputSystem.InputDevice device)
-        {            
+        {
             logger.LogInfo($"Hook InputManager.AddDevice {device.name}");
             if (device.name == "Keyboard" || device.name == "Mouse" || device.name == "Pen") return true;
             bool supported = true;
@@ -45,10 +46,10 @@ namespace MyFirstPlugin
             }
             if (!supported)
             {
-                logger.LogError($"Unsupported InputManager.AddDevice {device.deviceId} path={device.path} description='{device.description.ToJson()}'");                
+                logger.LogError($"Unsupported InputManager.AddDevice {device.deviceId} path={device.path} description='{device.description.ToJson()}'");
                 return false;
             }
             return true;
         }
-    }        
+    }
 }
